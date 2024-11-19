@@ -1,0 +1,55 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Dragon",
+	"patterns": [
+		{
+			"include": "#type"
+		},
+		{
+			"include": "#offset"
+		},
+		{
+			"include": "#string"
+		},
+		{
+			"include": "#comment"
+		}
+	],
+	"repository": {
+		"type": {
+			"patterns": [{
+				"name": "keyword.control.dragon.type_marker",
+				"match": "!([a-zA-Z0-9.]+)"
+			}]
+		},
+		"offset": {
+			"patterns": [{
+				"name": "keyword.control.dragon.offset_marker",
+				"match": "@([a-zA-Z0-9.]+)"
+			}]
+		},
+		"string": {
+			"name": "string.quoted.double.dragon",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.dragon",
+					"match": "\\\\."
+				}
+			]
+		},
+		"comment": {
+			"name": "comment.block.dragon",
+			"begin": "\\[",
+			"end": "\\]",
+			"patterns": [
+				{
+					"name": "constant.character.middle.dragon",
+					"match": "(\\\\.)+"
+				}
+			]
+		}
+	},
+	"scopeName": "source.dragon"
+}

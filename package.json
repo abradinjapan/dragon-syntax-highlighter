@@ -1,0 +1,25 @@
+{
+  "name": "dragon-language",
+  "displayName": "dragon-language",
+  "description": "Dragon syntax highlighter.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "dragon",
+      "aliases": ["Dragon", "dragon"],
+      "extensions": [".dragon"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "dragon",
+      "scopeName": "source.dragon",
+      "path": "./syntaxes/dragon.tmLanguage.json"
+    }]
+  }
+}
