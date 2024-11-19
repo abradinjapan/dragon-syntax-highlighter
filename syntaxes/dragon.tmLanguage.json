@@ -19,13 +19,13 @@
 		"type": {
 			"patterns": [{
 				"name": "keyword.control.dragon.type_marker",
-				"match": "!([a-zA-Z0-9.]+)"
+				"match": "!([a-zA-Z0-9._]+)"
 			}]
 		},
 		"offset": {
 			"patterns": [{
-				"name": "keyword.control.dragon.offset_marker",
-				"match": "@([a-zA-Z0-9.]+)"
+				"name": "keyword.other.dragon.offset_marker",
+				"match": "@([a-zA-Z0-9._]+)"
 			}]
 		},
 		"string": {
@@ -45,8 +45,8 @@
 			"end": "\\]",
 			"patterns": [
 				{
-					"name": "constant.character.middle.dragon",
-					"match": "(\\\\.)+"
+					"name": "comment.block.middle",
+					"match": "\\\\."
 				}
 			]
 		}
