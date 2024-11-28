@@ -6,6 +6,9 @@
 			"include": "#type"
 		},
 		{
+			"include": "#tag"
+		},
+		{
 			"include": "#offset"
 		},
 		{
@@ -18,13 +21,19 @@
 	"repository": {
 		"type": {
 			"patterns": [{
-				"name": "keyword.control.dragon.type_marker",
+				"name": "storage.type.variable.dragon.type",
 				"match": "!([a-zA-Z0-9._]+)"
+			}]
+		},
+		"tag": {
+			"patterns": [{
+				"name": "storage.modifier.variable.dragon.tag",
+				"match": "#([a-zA-Z0-9._]+)"
 			}]
 		},
 		"offset": {
 			"patterns": [{
-				"name": "keyword.other.dragon.offset_marker",
+				"name": "constant.language.dragon.offset",
 				"match": "@([a-zA-Z0-9._]+)"
 			}]
 		},
