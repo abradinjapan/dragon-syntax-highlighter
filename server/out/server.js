@@ -67,13 +67,13 @@ function dragonParseDocumentForTypes(text) {
             characterIndex++;
             // get name
             let start = characterIndex - 1;
-            let length = 0;
+            let length = 1;
             while (characterIndex < text.length && dragonisNameCharacter(text[characterIndex])) {
                 length++;
                 characterIndex++;
             }
             // create and append name
-            output.push(text.substring(start, start + length + 1));
+            output.push(text.substring(start, start + length));
         }
     }
     return output;
