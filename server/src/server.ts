@@ -4,27 +4,63 @@ import {
     Diagnostic,
     DiagnosticSeverity,
     ProposedFeatures,
-    InitializeParams
+    InitializeParams,
+    CompletionItem,
+    CompletionItemKind
 } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { TextDocumentSyncKind } from 'vscode-languageserver/node';
 
+// connections and documents
 const connection = createConnection(ProposedFeatures.all);
 const documents = new TextDocuments(TextDocument);
 connection.onInitialize((_params: InitializeParams) => {
     return {
         capabilities: {
             textDocumentSync: TextDocumentSyncKind.Incremental,
+            completionProvider: {
+                resolveProvider: false
+            },
             hoverProvider: true
         }
     };
 });
 
+// keywords
+const functionNames = new Map<string, string[]>();
+
+// on change document
 documents.onDidChangeContent(change => {
+    const doc = change.document;
+    const text = doc.getText();
+    const regex = new RegExp("^[0-9a-zA-Z_.]+$");
+
+    const names: string[] = [];
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+        names.push(match[1]);
+    }
+
+    functionNames.set(doc.uri, names);
+
     validateDocument(change.document);
 });
 
+// on completion
+connection.onCompletion((params) => {
+    const uri = params.textDocument.uri;
+    const names = functionNames.get(uri) || [];
+
+    return names.map(name => ({
+        label: name,
+        kind: CompletionItemKind.Function,
+        detail: "Dragon Function",
+        insertText: name + "()()"
+    }));
+});
+
+// validate document
 function validateDocument(doc: TextDocument) {
     const text = doc.getText();
     const diagnostics: Diagnostic[] = [];
@@ -39,21 +75,23 @@ function validateDocument(doc: TextDocument) {
                 end: doc.positionAt(curseIndex + 5)
             },
             message: "Forbidden incantation 'curse' detected",
-            source: "dragonforge-lsp"
+            source: "dragon-lsp"
         });
     }
 
     connection.sendDiagnostics({ uri: doc.uri, diagnostics });
 }
 
+// on hover
 connection.onHover((_params) => {
     return {
         contents: {
-            language: "dragonforge",
-            value: "🔥 Dragonforge symbol: raw arcane essence"
+            language: "dragon",
+            value: "Dragon Symbol: (Not yet implemented)"
         }
     };
 });
 
+// start listeners
 documents.listen(connection);
 connection.listen();

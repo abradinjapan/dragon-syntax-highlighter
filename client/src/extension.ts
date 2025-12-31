@@ -9,6 +9,8 @@ import {
 let client: LanguageClient;
 
 export function activate(context: vscode.ExtensionContext) {
+    // show extension activated
+    console.log("DragonForge extension activated.");
     const serverModule = context.asAbsolutePath('server/out/server.js');
     const serverOptions: ServerOptions = {
         run: {
@@ -21,11 +23,11 @@ export function activate(context: vscode.ExtensionContext) {
         }
     };
     const clientOptions: LanguageClientOptions = {
-        documentSelector: [{ scheme: 'file', language: 'dragonforge' }]
+        documentSelector: [{ scheme: 'file', language: 'dragon' }]
     };
     client = new LanguageClient(
-        'dragonforgeLanguageServer',
-        'Dragonforge Language Server',
+        'dragonLanguageServer',
+        'Dragon Language Server',
         serverOptions,
         clientOptions
     );
@@ -33,5 +35,6 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate(): Thenable<void> | undefined {
+    console.log("DragonForge extension deactivated.");
     return client?.stop();
 }

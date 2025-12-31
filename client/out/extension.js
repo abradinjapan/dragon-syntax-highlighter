@@ -5,6 +5,8 @@ exports.deactivate = deactivate;
 const node_1 = require("vscode-languageclient/node");
 let client;
 function activate(context) {
+    // show extension activated
+    console.log("DragonForge extension activated.");
     const serverModule = context.asAbsolutePath('server/out/server.js');
     const serverOptions = {
         run: {
@@ -17,11 +19,12 @@ function activate(context) {
         }
     };
     const clientOptions = {
-        documentSelector: [{ scheme: 'file', language: 'dragonforge' }]
+        documentSelector: [{ scheme: 'file', language: 'dragon' }]
     };
-    client = new node_1.LanguageClient('dragonforgeLanguageServer', 'Dragonforge Language Server', serverOptions, clientOptions);
+    client = new node_1.LanguageClient('dragonLanguageServer', 'Dragon Language Server', serverOptions, clientOptions);
     client.start();
 }
 function deactivate() {
+    console.log("DragonForge extension deactivated.");
     return client?.stop();
 }
