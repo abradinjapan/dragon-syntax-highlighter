@@ -11,7 +11,8 @@ connection.onInitialize((_params) => {
         capabilities: {
             textDocumentSync: node_2.TextDocumentSyncKind.Incremental,
             completionProvider: {
-                resolveProvider: false
+                resolveProvider: false,
+                triggerCharacters: ["!"]
             },
             hoverProvider: true
         }
@@ -19,28 +20,85 @@ connection.onInitialize((_params) => {
 });
 // keywords
 const functionNames = new Map();
+const typeNames = new Map();
+// check if is name character
+function dragonisNameCharacter(text) {
+    return ((text[0] >= 'A' && text[0] <= 'Z') ||
+        (text[0] >= 'a' && text[0] <= 'z') ||
+        (text[0] >= '0' && text[0] <= '9') ||
+        (text[0] >= '.' && text[0] <= '.') ||
+        (text[0] >= '_' && text[0] <= '_'));
+}
+// parse document for types
+function dragonParseDocumentForTypes(text) {
+    let output = [];
+    // read document character by character
+    fileScopeLoop: for (let characterIndex = 0; characterIndex < text.length; characterIndex++) {
+        // check for whitespace characters
+        if (text.charCodeAt(characterIndex) >= 0 && text.charCodeAt(characterIndex) <= 32) {
+            // skip whitespace
+            continue;
+        }
+        // check for comments
+        if (text[characterIndex] == '[') {
+            let commentDepth = 1;
+            characterIndex++;
+            // parse over comments
+            commentDepthLoop: while (commentDepth > 0 && characterIndex < text.length) {
+                // check for opener
+                if (text[characterIndex] == '[') {
+                    commentDepth++;
+                    characterIndex++;
+                    continue;
+                }
+                // check for closer
+                if (text[characterIndex] == ']') {
+                    commentDepth--;
+                    characterIndex++;
+                    continue;
+                }
+                // else, just a comment character
+                characterIndex++;
+            }
+        }
+        // get types
+        if (text[characterIndex] == '!') {
+            // next character
+            characterIndex++;
+            // get name
+            let start = characterIndex - 1;
+            let length = 0;
+            while (characterIndex < text.length && dragonisNameCharacter(text[characterIndex])) {
+                length++;
+                characterIndex++;
+            }
+            // create and append name
+            output.push(text.substring(start, start + length + 1));
+        }
+    }
+    return output;
+}
 // on change document
 documents.onDidChangeContent(change => {
+    // get document text
     const doc = change.document;
     const text = doc.getText();
-    const regex = new RegExp("^[0-9a-zA-Z_.]+$");
-    const names = [];
-    let match;
-    while ((match = regex.exec(text)) !== null) {
-        names.push(match[1]);
-    }
-    functionNames.set(doc.uri, names);
-    validateDocument(change.document);
+    // parse document
+    let matches = dragonParseDocumentForTypes(text);
+    const unique = new Set(matches);
+    // setup types
+    typeNames.set(doc.uri, unique);
+    //validateDocument(change.document);
 });
 // on completion
 connection.onCompletion((params) => {
     const uri = params.textDocument.uri;
-    const names = functionNames.get(uri) || [];
-    return names.map(name => ({
-        label: name,
+    const types = typeNames.get(uri) || new Set();
+    return [...types].map(t => ({
+        label: t,
         kind: node_1.CompletionItemKind.Function,
-        detail: "Dragon Function",
-        insertText: name + "()()"
+        detail: "Dragon Type",
+        insertText: t.substring(1, t.length)
     }));
 });
 // validate document
