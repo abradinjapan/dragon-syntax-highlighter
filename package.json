@@ -2,6 +2,7 @@
   "name": "dragon-language",
   "displayName": "dragon-language",
   "description": "Dragon syntax highlighter.",
+  "publisher": "abradinjapan",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.95.0"
@@ -9,17 +10,46 @@
   "categories": [
     "Programming Languages"
   ],
+  "main": "./client/out/extension.js",
   "contributes": {
-    "languages": [{
-      "id": "dragon",
-      "aliases": ["Dragon", "dragon"],
-      "extensions": [".dragon"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "dragon",
-      "scopeName": "source.dragon",
-      "path": "./syntaxes/dragon.tmLanguage.json"
-    }]
+    "languages": [
+      {
+        "id": "dragon",
+        "aliases": [
+          "Dragon",
+          "dragon"
+        ],
+        "extensions": [
+          ".dragon"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "dragon",
+        "scopeName": "source.dragon",
+        "path": "./syntaxes/dragon.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "npm run compile:client && npm run compile:server",
+    "compile:client": "tsc -p ./client",
+    "compile:server": "tsc -p ./server",
+    "watch": "npm run watch:client & npm run watch:server",
+    "watch:client": "tsc -p ./client --watch",
+    "watch:server": "tsc -p ./server --watch",
+    "prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "1.90.0",
+    "typescript": "^5.0.0",
+    "vscode-languageclient": "^9.0.1"
+  },
+  "dependencies": {
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.12"
   }
 }
