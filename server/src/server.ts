@@ -1,3 +1,4 @@
+// imports
 import {
     createConnection,
     TextDocuments,
@@ -33,7 +34,7 @@ const functionNames = new Map<string, string[]>();
 const typeNames = new Map<string, Set<string>>();
 
 // check if is name character
-function dragonisNameCharacter(text: string) {
+function dragonIsNameCharacter(text: string) {
     return (
         (text[0] >= 'A' && text[0] <= 'Z') ||
         (text[0] >= 'a' && text[0] <= 'z') ||
@@ -48,7 +49,8 @@ function dragonParseDocumentForTypes(text: string): string[] {
     let output: string[] = [];
     
     // read document character by character
-    fileScopeLoop: for (let characterIndex = 0; characterIndex < text.length; characterIndex++) {
+    fileScopeLoop:
+    for (let characterIndex = 0; characterIndex < text.length; characterIndex++) {
         // check for whitespace characters
         if (text.charCodeAt(characterIndex) >= 0 && text.charCodeAt(characterIndex) <= 32) {
             // skip whitespace
@@ -87,7 +89,7 @@ function dragonParseDocumentForTypes(text: string): string[] {
             // get name
             let start = characterIndex - 1;
             let length = 1;
-            while (characterIndex < text.length && dragonisNameCharacter(text[characterIndex])) {
+            while (characterIndex < text.length && dragonIsNameCharacter(text[characterIndex])) {
                 length++;
                 characterIndex++;
             }
@@ -122,10 +124,10 @@ connection.onCompletion((params) => {
     const types = typeNames.get(uri) || new Set();
 
     return [...types].map(t => ({
-        label: t,
-        kind: CompletionItemKind.Function,
-        detail: "Dragon Type",
-        insertText: t.substring(1, t.length)
+        label: t.replace(/^!/, ""),
+        kind: CompletionItemKind.Struct,
+        detail: "Dragonforge Type",
+        insertText: t
     }));
 });
 

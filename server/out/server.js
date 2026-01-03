@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+// imports
 const node_1 = require("vscode-languageserver/node");
 const vscode_languageserver_textdocument_1 = require("vscode-languageserver-textdocument");
 const node_2 = require("vscode-languageserver/node");
@@ -22,7 +23,7 @@ connection.onInitialize((_params) => {
 const functionNames = new Map();
 const typeNames = new Map();
 // check if is name character
-function dragonisNameCharacter(text) {
+function dragonIsNameCharacter(text) {
     return ((text[0] >= 'A' && text[0] <= 'Z') ||
         (text[0] >= 'a' && text[0] <= 'z') ||
         (text[0] >= '0' && text[0] <= '9') ||
@@ -68,7 +69,7 @@ function dragonParseDocumentForTypes(text) {
             // get name
             let start = characterIndex - 1;
             let length = 1;
-            while (characterIndex < text.length && dragonisNameCharacter(text[characterIndex])) {
+            while (characterIndex < text.length && dragonIsNameCharacter(text[characterIndex])) {
                 length++;
                 characterIndex++;
             }
@@ -95,10 +96,10 @@ connection.onCompletion((params) => {
     const uri = params.textDocument.uri;
     const types = typeNames.get(uri) || new Set();
     return [...types].map(t => ({
-        label: t,
-        kind: node_1.CompletionItemKind.Function,
-        detail: "Dragon Type",
-        insertText: t.substring(1, t.length)
+        label: t.replace(/^!/, ""),
+        kind: node_1.CompletionItemKind.Struct,
+        detail: "Dragonforge Type",
+        insertText: t
     }));
 });
 // validate document
